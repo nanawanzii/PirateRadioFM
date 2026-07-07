@@ -1,0 +1,47 @@
+// Radio source: picks/rotates stations from the shared station list, drives the player.
+import * as player from "../player.js";
+import { now } from "../state.js";
+import { all, genres as allGenres, type Station } from "../stations.js";
+
+const stations = all();
+
+export function genres(): string[] {
+  return allGenres();
+}
+
+export function list(): string {
+  return genres()
+    .map((g) => `${g} (${stations[g].length} station${stations[g].length > 1 ? "s" : ""})`)
+    .join(", ");
+}
+
+function normalize(genre: string): string | null {
+  const g = genre.trim().toLowerCase();
+  return genres().includes(g) ? g : null;
+}
+
+export function playGenre(genre: string, index = 0): Station {
+  const g = normalize(genre);
+  if (!g) throw new Error(`Unknown genre "${genre}". Available: ${genres().join(", ")}`);
+  const st = stations[g][index % stations[g].length];
+  player.play(st.url, now.volume);
+  now.state = "playing";
+  now.source = "radio";
+  now.genre = g;
+  now.stationName = st.name;
+  now.stationIndex = index % stations[g].length;
+  return st;
+}
+
+export function next(): Station {
+  if (now.source !== "radio" || !now.genre)
+    throw new Error("No radio station is playing.");
+  return playGenre(now.genre, now.stationIndex + 1);
+}
+
+export function prev(): Station {
+  if (now.source !== "radio" || !now.genre)
+    throw new Error("No radio station is playing.");
+  const len = stations[now.genre].length;
+  return playGenre(now.genre, (now.stationIndex - 1 + len) % len);
+}

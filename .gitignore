@@ -1,0 +1,10 @@
+node_modules/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+.plugins-cache.json
+
+# dist/ is intentionally committed: the plugin ships pre-bundled so it installs
+# from the marketplace with no build step. Rebuild with `npm run build`.
