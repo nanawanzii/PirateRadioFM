@@ -21,6 +21,11 @@ Then add the marketplace and install:
 claude plugin marketplace add nanawanzii/PirateRadioFM
 claude plugin install pirate-radio@pirate-radio
 ```
+Or
+```bash
+/plugin marketplace add nanawanzii/PirateRadioFM
+/plugin install pirate-radio@pirate-radio
+```
 
 **Restart Claude Code.** In a new session, type `/` — you should see `/jazz`,
 `/classical`, `/next`, etc.
