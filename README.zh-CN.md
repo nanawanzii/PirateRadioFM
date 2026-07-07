@@ -1,33 +1,23 @@
 # PirateRadioFM
 
-> 一个可嵌入 CLI 编程 agent 的音乐电台工具。
+在 CLI 编程 agent 里放网络电台。会话结束时音乐自动停止。
 
 [English](./README.md)
 
----
+## 安装（Claude Code）
 
-## 安装
+需要 Node.js 20+ 和 `mpv`（或 `ffplay`）：
 
-
-**前提：** Node.js ≥ 20，以及 `mpv`（推荐）或 `ffplay`：
-
-- Windows：`winget install mpv`（或 `scoop install mpv`）
+- Windows：`winget install mpv`
 - macOS：`brew install mpv`
 - Linux：`sudo apt install mpv`
-
-然后加上 marketplace 直接装：
 
 ```bash
 claude plugin marketplace add nanawanzii/PirateRadioFM
 claude plugin install radiohead@radiohead
 ```
-或者：
-```bash
-/plugin marketplace add nanawanzii/PirateRadioFM
-/plugin install radiohead@radiohead
-```
-**重启 Claude Code。** 在新会话里输 `/`，你应该能看到 `/jazz`、`/classical`、
-`/next` 等命令。
+
+重启 Claude Code，在新会话里输 `/` 就能看到命令。
 
 卸载：
 
@@ -36,36 +26,29 @@ claude plugin uninstall radiohead
 claude plugin marketplace remove radiohead
 ```
 
----
-
-## 其他 agent（Codex、OpenCode、Hermes、pi）
-
-底层的 MCP server 和 CLI 与宿主无关。克隆仓库后运行安装器，它会自动检测你装了
-哪些 agent 并逐个配置：
+## 安装（Codex / OpenCode / Hermes / pi）
 
 ```bash
 git clone https://github.com/nanawanzii/PirateRadioFM
 cd PirateRadioFM
-node install.mjs            # 或指定：node install.mjs codex opencode hermes pi
+node install.mjs
 ```
 
-| Agent | 安装内容 |
-|---|---|
-| **Codex** | MCP server 写入 `~/.codex/config.toml`，`/jazz` 式 prompts 写入 `~/.codex/prompts/` |
-| **OpenCode** | MCP server 写入 `opencode.json`，斜杠命令写入 `~/.config/opencode/commands/` |
-| **Hermes** | MCP server 写入 `~/.hermes/config.yaml` —— 直接对话即可：*"放点爵士"* |
-| **pi** | `/jazz` 式 prompt 模板 + 一个 `radiohead` skill（pi 不支持 MCP，命令直接调用 `dist/cli.js`） |
+不带参数时配置本机装了的所有 agent。也可以指定一个：`node install.mjs codex`
+（或 `opencode`、`hermes`、`pi`）。`node install.mjs --uninstall` 删除写入的
+全部内容。装完重启对应 agent。
 
-装完重启对应 agent。`node install.mjs --uninstall` 可完整移除写入的所有内容。
+写入的位置：
 
-"会话结束音乐自动停"在所有 MCP 宿主上都有效：server 是 agent 的子进程，agent
-退出时 watchdog 会杀掉播放。唯一例外是 pi（没有可锚定的 server 进程），在 pi
-里用 `/stop` 停止播放。
+- Codex：MCP server 写进 `~/.codex/config.toml`，prompts 写进 `~/.codex/prompts/`
+- OpenCode：MCP server 写进 `~/.config/opencode/opencode.json`，命令写进 `~/.config/opencode/commands/`
+- Hermes：MCP server 写进 `~/.hermes/config.yaml`
+- pi：prompt 模板写进 `~/.pi/agent/prompts/`，skill 写进 `~/.pi/agent/skills/radiohead/`
 
----
+pi 不支持 MCP，命令直接调用 `dist/cli.js`，所以会话结束时音乐不会自动停，
+需要用 `/stop`。
 
-## 指令
-
+## 命令
 
 ### 风格电台
 
@@ -89,39 +72,26 @@ node install.mjs            # 或指定：node install.mjs codex opencode hermes
 
 | 命令 | 电台 |
 |---|---|
-| `/kexp` | KEXP 90.3 西雅图（DJ 独立 / 另类） |
-| `/kcrw` | KCRW Eclectic24（洛杉矶） |
-| `/wfmu` | WFMU 自由派（新泽西） |
-| `/nts` | NTS 伦敦（地下 / 俱乐部） |
-| `/wwoz` | WWOZ 新奥尔良（爵士 & 蓝调） |
-| `/paradise` | Radio Paradise（人工精选 eclectic） |
+| `/kexp` | KEXP 90.3，西雅图 |
+| `/kcrw` | KCRW Eclectic24，洛杉矶 |
+| `/wfmu` | WFMU 自由派，新泽西 |
+| `/nts` | NTS，伦敦 |
+| `/wwoz` | WWOZ，新奥尔良，爵士和蓝调 |
+| `/paradise` | Radio Paradise |
 
 ### 播放控制
 
 | 命令 | 作用 |
 |---|---|
-| `/play` | 播放爵士电台（默认），暂停时则恢复播放 |
-| `/pause` | 暂停（可恢复） |
-| `/resume` | 恢复暂停的播放 |
-| `/stop` | 完全停止播放 |
+| `/play` | 播放爵士电台；如果之前暂停了，就恢复播放 |
+| `/pause` | 暂停 |
+| `/resume` | 恢复播放 |
+| `/stop` | 停止。和暂停不同，停止后不能恢复 |
 | `/next` | 下一个台 / 频道 / 曲目 |
 | `/prev` | 上一个台 / 频道 / 曲目 |
-| `/volume <0-100>` | 设置音量，如 `/volume 60` |
-| `/now-playing` | 显示正在播放的内容 |
+| `/volume <0-100>` | 设置音量 |
+| `/now-playing` | 显示正在播放什么 |
 
-有多个频道的电台（`/nts`、`/paradise`）可以用 `/next` 在其频道间切换。
+`/nts` 和 `/paradise` 有多个频道，用 `/next` 切换。
 
-### Spotify
-
-遥控一个已在运行的 Spotify 客户端（需要 Spotify Premium）。
-
-| 命令 | 作用 |
-|---|---|
-| `/spotify-login` | 开始 Spotify OAuth 登录流程 |
-| `/spotify-complete-login <code>` | 粘贴跳转 URL 里的授权码完成登录 |
-| `/spotify-list` | 列出你的歌单 |
-| `/spotify-play <name-or-uri>` | 按名称或 URI 播放歌单 |
-
-Spotify 播放中时，`/pause`、`/resume`、`/next`、`/prev`、`/volume` 同样可以控制它。
-
-也可以直接对 agent 说话：*"放点爵士乐"*、*"换个台"*、*"音量调到 60"*、*"停"*。
+直接说话也行："放点爵士"、"换个台"、"停"。

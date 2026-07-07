@@ -1,34 +1,24 @@
 # PirateRadioFM
 
-> Music radio for CLI coding agents
+Play internet radio from a CLI coding agent. Music stops automatically when
+the session ends.
 
 [中文文档](./README.zh-CN.md)
 
----
+## Install (Claude Code)
 
-## Install
+Requires Node.js 20+ and `mpv` (or `ffplay`):
 
-
-**Prerequisites:** Node.js ≥ 20, and `mpv` (recommended) or `ffplay`:
-
-- Windows: `winget install mpv` (or `scoop install mpv`)
+- Windows: `winget install mpv`
 - macOS: `brew install mpv`
 - Linux: `sudo apt install mpv`
-
-Then add the marketplace and install:
 
 ```bash
 claude plugin marketplace add nanawanzii/PirateRadioFM
 claude plugin install radiohead@radiohead
 ```
-Or
-```bash
-/plugin marketplace add nanawanzii/PirateRadioFM
-/plugin install radiohead@radiohead
-```
 
-**Restart Claude Code.** In a new session, type `/` — you should see `/jazz`,
-`/classical`, `/next`, etc.
+Restart Claude Code. Type `/` in a new session to see the commands.
 
 Uninstall:
 
@@ -37,37 +27,29 @@ claude plugin uninstall radiohead
 claude plugin marketplace remove radiohead
 ```
 
----
-
-## Other agents (Codex, OpenCode, Hermes, pi)
-
-The MCP server and CLI underneath are host-agnostic. Clone the repo and run the
-installer — it detects which agents you have installed and wires up each one:
+## Install (Codex / OpenCode / Hermes / pi)
 
 ```bash
 git clone https://github.com/nanawanzii/PirateRadioFM
 cd PirateRadioFM
-node install.mjs            # or pick: node install.mjs codex opencode hermes pi
+node install.mjs
 ```
 
-| Agent | What you get |
-|---|---|
-| **Codex** | MCP server in `~/.codex/config.toml` + `/jazz`-style prompts in `~/.codex/prompts/` |
-| **OpenCode** | MCP server in `opencode.json` + slash commands in `~/.config/opencode/commands/` |
-| **Hermes** | MCP server in `~/.hermes/config.yaml` — just talk: *"play some jazz"* |
-| **pi** | `/jazz`-style prompt templates + a `radiohead` skill (pi has no MCP; commands shell out to `dist/cli.js`) |
+With no arguments it configures every agent found on the machine. To pick one:
+`node install.mjs codex` (or `opencode`, `hermes`, `pi`). To remove everything
+it wrote: `node install.mjs --uninstall`. Restart the agent after installing.
 
-Restart the agent afterwards. `node install.mjs --uninstall` removes everything
-it wrote.
+What it writes:
 
-Auto-stop-on-session-end works on every MCP host: the server is a child of the
-agent process, so when the agent exits the watchdog kills playback. pi is the
-exception (no server process to anchor to) — stop playback there with `/stop`.
+- Codex: MCP server in `~/.codex/config.toml`, prompts in `~/.codex/prompts/`
+- OpenCode: MCP server in `~/.config/opencode/opencode.json`, commands in `~/.config/opencode/commands/`
+- Hermes: MCP server in `~/.hermes/config.yaml`
+- pi: prompt templates in `~/.pi/agent/prompts/`, skill in `~/.pi/agent/skills/radiohead/`
 
----
+pi does not support MCP, so commands there call `dist/cli.js` directly and
+music does not stop when the session ends. Use `/stop`.
 
 ## Commands
-
 
 ### Genre stations
 
@@ -91,42 +73,26 @@ exception (no server process to anchor to) — stop playback there with `/stop`.
 
 | Command | Station |
 |---|---|
-| `/kexp` | KEXP 90.3 Seattle (DJ indie / alternative) |
-| `/kcrw` | KCRW Eclectic24 (Los Angeles) |
-| `/wfmu` | WFMU freeform (New Jersey) |
-| `/nts` | NTS London (underground / club) |
-| `/wwoz` | WWOZ New Orleans (jazz & blues) |
-| `/paradise` | Radio Paradise (curated eclectic) |
+| `/kexp` | KEXP 90.3 Seattle |
+| `/kcrw` | KCRW Eclectic24, Los Angeles |
+| `/wfmu` | WFMU freeform, New Jersey |
+| `/nts` | NTS London |
+| `/wwoz` | WWOZ New Orleans, jazz & blues |
+| `/paradise` | Radio Paradise |
 
 ### Playback control
 
 | Command | What it does |
 |---|---|
-| `/play` | Play jazz radio (default), or resume if paused |
-| `/pause` | Pause playback (resumable) |
-| `/resume` | Resume paused playback |
-| `/stop` | Stop playback entirely |
+| `/play` | Play jazz radio, or resume if paused |
+| `/pause` | Pause |
+| `/resume` | Resume |
+| `/stop` | Stop. Unlike pause, this can't be resumed |
 | `/next` | Next station / channel / track |
 | `/prev` | Previous station / channel / track |
-| `/volume <0-100>` | Set volume, e.g. `/volume 60` |
-| `/now-playing` | Show what's currently playing |
+| `/volume <0-100>` | Set volume |
+| `/now-playing` | Show what's playing |
 
-Stations with more than one stream (`/nts`, `/paradise`) rotate between their
-channels with `/next`.
+`/nts` and `/paradise` have several channels; `/next` cycles through them.
 
-### Spotify
-
-Remote-controls a running Spotify client (requires Spotify Premium).
-
-| Command | What it does |
-|---|---|
-| `/spotify-login` | Start the Spotify OAuth login flow |
-| `/spotify-complete-login <code>` | Finish login by pasting the code from the redirect URL |
-| `/spotify-list` | List your playlists |
-| `/spotify-play <name-or-uri>` | Play a playlist by name or URI |
-
-Once Spotify is playing, `/pause`, `/resume`, `/next`, `/prev` and `/volume`
-control it too.
-
-You can also just talk to the agent: *"play some jazz"*, *"switch station"*,
-*"set volume to 60"*, *"stop the music"*.
+Plain language also works: "play some jazz", "switch station", "stop the music".
