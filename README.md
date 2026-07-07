@@ -19,12 +19,12 @@ Then add the marketplace and install:
 
 ```bash
 claude plugin marketplace add nanawanzii/PirateRadioFM
-claude plugin install pirate-radio@pirate-radio
+claude plugin install pirate-radio@pirate-radio-local
 ```
 Or
 ```bash
 /plugin marketplace add nanawanzii/PirateRadioFM
-/plugin install pirate-radio@pirate-radio
+/plugin install pirate-radio@pirate-radio-local
 ```
 
 **Restart Claude Code.** In a new session, type `/` — you should see `/jazz`,
@@ -34,7 +34,7 @@ Uninstall:
 
 ```bash
 claude plugin uninstall pirate-radio
-claude plugin marketplace remove pirate-radio
+claude plugin marketplace remove pirate-radio-local
 ```
 
 ---
