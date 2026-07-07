@@ -14,7 +14,7 @@ Requires Node.js 20+ and `mpv` (or `ffplay`):
 - Linux: `sudo apt install mpv`
 
 ```bash
-claude plugin marketplace add nanawanzii/PirateRadioFM
+claude plugin marketplace add ziwangprincex/PirateRadioFM
 claude plugin install radiohead@radiohead
 ```
 
@@ -30,7 +30,7 @@ claude plugin marketplace remove radiohead
 ## Install (Codex / OpenCode / Hermes / pi)
 
 ```bash
-git clone https://github.com/nanawanzii/PirateRadioFM
+git clone https://github.com/ziwangprincex/PirateRadioFM
 cd PirateRadioFM
 node install.mjs
 ```

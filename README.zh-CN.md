@@ -13,7 +13,7 @@
 - Linux：`sudo apt install mpv`
 
 ```bash
-claude plugin marketplace add nanawanzii/PirateRadioFM
+claude plugin marketplace add ziwangprincex/PirateRadioFM
 claude plugin install radiohead@radiohead
 ```
 
@@ -29,7 +29,7 @@ claude plugin marketplace remove radiohead
 ## 安装（Codex / OpenCode / Hermes / pi）
 
 ```bash
-git clone https://github.com/nanawanzii/PirateRadioFM
+git clone https://github.com/ziwangprincex/PirateRadioFM
 cd PirateRadioFM
 node install.mjs
 ```
