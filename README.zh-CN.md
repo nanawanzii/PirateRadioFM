@@ -19,12 +19,12 @@
 
 ```bash
 claude plugin marketplace add nanawanzii/PirateRadioFM
-claude plugin install pirate-radio@pirate-radio
+claude plugin install pirate-radio@pirate-radio-local
 ```
 或者：
 ```bash
 /plugin marketplace add nanawanzii/PirateRadioFM
-/plugin install pirate-radio@pirate-radio
+/plugin install pirate-radio@pirate-radio-local
 ```
 **重启 Claude Code。** 在新会话里输 `/`，你应该能看到 `/jazz`、`/classical`、
 `/next` 等命令。
@@ -33,7 +33,7 @@ claude plugin install pirate-radio@pirate-radio
 
 ```bash
 claude plugin uninstall pirate-radio
-claude plugin marketplace remove pirate-radio
+claude plugin marketplace remove pirate-radio-local
 ```
 
 ---
