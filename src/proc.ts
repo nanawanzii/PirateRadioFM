@@ -50,6 +50,7 @@ export function procStartToken(pid: number): string | null {
       const out = execFileSync("ps", ["-o", "lstart=", "-p", String(pid)], {
         encoding: "utf8",
         timeout: 4000,
+        windowsHide: true,
       }).trim();
       return out ? `d:${out}` : null;
     }
@@ -62,7 +63,7 @@ export function procStartToken(pid: number): string | null {
           "-Command",
           `(Get-CimInstance Win32_Process -Filter "ProcessId=${pid}" -ErrorAction SilentlyContinue).CreationDate`,
         ],
-        { encoding: "utf8", timeout: 8000 }
+        { encoding: "utf8", timeout: 8000, windowsHide: true }
       ).trim();
       return out ? `w:${out}` : null;
     }
@@ -95,6 +96,7 @@ export function killPid(pid: number | null | undefined): void {
       execFileSync("taskkill", ["/F", "/PID", String(pid), "/T"], {
         stdio: "ignore",
         timeout: 8000,
+        windowsHide: true,
       });
     } else {
       process.kill(pid, "SIGTERM");
@@ -127,7 +129,7 @@ export function findOrphanPlayers(hosts: string[]): number[] {
           "Get-CimInstance Win32_Process -Filter \"Name='mpv.exe' OR Name='ffplay.exe'\" " +
             "-ErrorAction SilentlyContinue | ForEach-Object { \"$($_.ProcessId)`t$($_.CommandLine)\" }",
         ],
-        { encoding: "utf8", timeout: 8000 }
+        { encoding: "utf8", timeout: 8000, windowsHide: true }
       );
       return parsePidLines(out, "\t", matches);
     }

@@ -59,7 +59,7 @@ function detect() {
   for (const p2 of ["mpv", "ffplay"]) {
     try {
       if (process.platform === "win32") {
-        execFileSync("where", [p2], { stdio: "ignore" });
+        execFileSync("where", [p2], { stdio: "ignore", windowsHide: true });
       } else {
         execFileSync("sh", ["-c", `command -v ${p2}`], { stdio: "ignore" });
       }

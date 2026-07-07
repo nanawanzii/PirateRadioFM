@@ -27,7 +27,7 @@ function detect(): Player | null {
       // argv array, no MSYS flag mangling. `command` is a shell builtin, so on
       // unix we invoke it through sh; p comes from a fixed list, so no injection.
       if (process.platform === "win32") {
-        execFileSync("where", [p], { stdio: "ignore" });
+        execFileSync("where", [p], { stdio: "ignore", windowsHide: true });
       } else {
         execFileSync("sh", ["-c", `command -v ${p}`], { stdio: "ignore" });
       }
@@ -78,7 +78,7 @@ export function play(url: string, volume: number): void {
       ? ["--no-video", "--really-quiet", `--volume=${volume}`, url]
       : ["-nodisp", "-autoexit", "-loglevel", "quiet", "-volume", String(Math.round((volume / 100) * 256)), url];
   // detached + unref lets the child outlive this short-lived CLI process.
-  const child = spawn(player, args, { stdio: "ignore", detached: true });
+  const child = spawn(player, args, { stdio: "ignore", detached: true, windowsHide: true });
   child.unref();
   if (child.pid) {
     let host: string | undefined;
@@ -102,7 +102,7 @@ function spawnWatchdog(playerPid: number): void {
       anchor.token ?? "",
       String(playerPid),
     ],
-    { stdio: "ignore", detached: true }
+    { stdio: "ignore", detached: true, windowsHide: true }
   );
   wd.unref();
   if (wd.pid) addWatchdog(wd.pid);

@@ -15486,7 +15486,8 @@ function procStartToken(pid) {
     if (isMac) {
       const out = execFileSync("ps", ["-o", "lstart=", "-p", String(pid)], {
         encoding: "utf8",
-        timeout: 4e3
+        timeout: 4e3,
+        windowsHide: true
       }).trim();
       return out ? `d:${out}` : null;
     }
@@ -15498,7 +15499,7 @@ function procStartToken(pid) {
           "-Command",
           `(Get-CimInstance Win32_Process -Filter "ProcessId=${pid}" -ErrorAction SilentlyContinue).CreationDate`
         ],
-        { encoding: "utf8", timeout: 8e3 }
+        { encoding: "utf8", timeout: 8e3, windowsHide: true }
       ).trim();
       return out ? `w:${out}` : null;
     }
@@ -15518,7 +15519,8 @@ function killPid(pid) {
     if (isWin) {
       execFileSync("taskkill", ["/F", "/PID", String(pid), "/T"], {
         stdio: "ignore",
-        timeout: 8e3
+        timeout: 8e3,
+        windowsHide: true
       });
     } else {
       process.kill(pid, "SIGTERM");
@@ -15542,7 +15544,7 @@ function findOrphanPlayers(hosts2) {
           "-Command",
           `Get-CimInstance Win32_Process -Filter "Name='mpv.exe' OR Name='ffplay.exe'" -ErrorAction SilentlyContinue | ForEach-Object { "$($_.ProcessId)\`t$($_.CommandLine)" }`
         ],
-        { encoding: "utf8", timeout: 8e3 }
+        { encoding: "utf8", timeout: 8e3, windowsHide: true }
       );
       return parsePidLines(out2, "	", matches);
     }
@@ -15817,7 +15819,7 @@ function detect() {
   for (const p of ["mpv", "ffplay"]) {
     try {
       if (process.platform === "win32") {
-        execFileSync2("where", [p], { stdio: "ignore" });
+        execFileSync2("where", [p], { stdio: "ignore", windowsHide: true });
       } else {
         execFileSync2("sh", ["-c", `command -v ${p}`], { stdio: "ignore" });
       }
@@ -15844,7 +15846,7 @@ function play(url, volume) {
   if (!player) throw new Error(installHint());
   stop();
   const args = player === "mpv" ? ["--no-video", "--really-quiet", `--volume=${volume}`, url] : ["-nodisp", "-autoexit", "-loglevel", "quiet", "-volume", String(Math.round(volume / 100 * 256)), url];
-  const child = spawn(player, args, { stdio: "ignore", detached: true });
+  const child = spawn(player, args, { stdio: "ignore", detached: true, windowsHide: true });
   child.unref();
   if (child.pid) {
     let host;
@@ -15867,7 +15869,7 @@ function spawnWatchdog(playerPid) {
       anchor.token ?? "",
       String(playerPid)
     ],
-    { stdio: "ignore", detached: true }
+    { stdio: "ignore", detached: true, windowsHide: true }
   );
   wd.unref();
   if (wd.pid) addWatchdog(wd.pid);
