@@ -39,6 +39,33 @@ claude plugin marketplace remove radiohead
 
 ---
 
+## Other agents (Codex, OpenCode, Hermes, pi)
+
+The MCP server and CLI underneath are host-agnostic. Clone the repo and run the
+installer — it detects which agents you have installed and wires up each one:
+
+```bash
+git clone https://github.com/nanawanzii/PirateRadioFM
+cd PirateRadioFM
+node install.mjs            # or pick: node install.mjs codex opencode hermes pi
+```
+
+| Agent | What you get |
+|---|---|
+| **Codex** | MCP server in `~/.codex/config.toml` + `/jazz`-style prompts in `~/.codex/prompts/` |
+| **OpenCode** | MCP server in `opencode.json` + slash commands in `~/.config/opencode/commands/` |
+| **Hermes** | MCP server in `~/.hermes/config.yaml` — just talk: *"play some jazz"* |
+| **pi** | `/jazz`-style prompt templates + a `radiohead` skill (pi has no MCP; commands shell out to `dist/cli.js`) |
+
+Restart the agent afterwards. `node install.mjs --uninstall` removes everything
+it wrote.
+
+Auto-stop-on-session-end works on every MCP host: the server is a child of the
+agent process, so when the agent exits the watchdog kills playback. pi is the
+exception (no server process to anchor to) — stop playback there with `/stop`.
+
+---
+
 ## Commands
 
 

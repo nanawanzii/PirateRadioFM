@@ -38,6 +38,32 @@ claude plugin marketplace remove radiohead
 
 ---
 
+## 其他 agent（Codex、OpenCode、Hermes、pi）
+
+底层的 MCP server 和 CLI 与宿主无关。克隆仓库后运行安装器，它会自动检测你装了
+哪些 agent 并逐个配置：
+
+```bash
+git clone https://github.com/nanawanzii/PirateRadioFM
+cd PirateRadioFM
+node install.mjs            # 或指定：node install.mjs codex opencode hermes pi
+```
+
+| Agent | 安装内容 |
+|---|---|
+| **Codex** | MCP server 写入 `~/.codex/config.toml`，`/jazz` 式 prompts 写入 `~/.codex/prompts/` |
+| **OpenCode** | MCP server 写入 `opencode.json`，斜杠命令写入 `~/.config/opencode/commands/` |
+| **Hermes** | MCP server 写入 `~/.hermes/config.yaml` —— 直接对话即可：*"放点爵士"* |
+| **pi** | `/jazz` 式 prompt 模板 + 一个 `radiohead` skill（pi 不支持 MCP，命令直接调用 `dist/cli.js`） |
+
+装完重启对应 agent。`node install.mjs --uninstall` 可完整移除写入的所有内容。
+
+"会话结束音乐自动停"在所有 MCP 宿主上都有效：server 是 agent 的子进程，agent
+退出时 watchdog 会杀掉播放。唯一例外是 pi（没有可锚定的 server 进程），在 pi
+里用 `/stop` 停止播放。
+
+---
+
 ## 指令
 
 
