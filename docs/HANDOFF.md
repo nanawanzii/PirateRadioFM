@@ -7,7 +7,7 @@
 
 ## 1. 这个项目是什么
 
-在 CLI 编码代理（Claude Code / Codex / OpenCode / Hermes / pi）里放网络电台、播客、Spotify、Apple Music。**核心卖点：会话结束时音乐自动停。**
+在 CLI 编码代理（Claude Code / Codex / OpenCode / Hermes / pi）里放网络电台、播客、Spotify、Apple Music。
 
 - 语言：TypeScript，编译成 4 个自包含 bundle 放在 `dist/`（**入库**，插件直接跑，无需 `npm install`）。
 - 依赖：只有 `@modelcontextprotocol/sdk`。dev 依赖只有 esbuild + typescript。**保持这种克制**。
