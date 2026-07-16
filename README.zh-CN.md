@@ -2,7 +2,7 @@
 
 # PirateRadioFM
 
-在 CLI 编程 agent 里放网络电台。会话结束时音乐自动停止。
+在 CLI 编程 agent 里放网络电台。
 
 [English](./README.md)
 
