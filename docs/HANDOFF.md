@@ -1,7 +1,7 @@
 # PirateRadioFM — 交接文档 / Handoff
 
 > 给未来接手改代码的人（或 AI model）看的。目标：**5 分钟内理解这个项目的核心难点、不变量、以及"改 X 要动哪些文件"。**
-> 最后更新：2026-07（加了 `/doctor`、spotify 类型收敛、`node:test`、`.gitattributes` 那一轮）。
+> 最后更新：2026-07（HÖR cookie 认证修复、文档补全）。
 
 ---
 
@@ -56,7 +56,7 @@ src/
     spotify.ts     OAuth PKCE + 远程控制已运行的 Spotify 客户端。最长、最脆。
     podcast.ts     iTunes 搜索 + RSS 解析 + tracking-URL 去壳。
     applemusic.ts  macOS 专属，走 AppleScript 控制 Music.app。
-    hoer.ts        HÖR Berlin，抓网页 videoId → yt-dlp 解析 → 本地播放器。
+    hoer.ts        HÖR Berlin，抓网页 videoId → yt-dlp 解析（需 YouTube cookies 认证）→ 本地播放器。
 data/stations.json  台数据（单一真相源：genre 列表、host 列表都从这派生）。
 commands/*.md       slash command 定义。install.mjs 从这动态发现，5 个 agent 共用。
 install.mjs         非-Claude agent 的安装器。从 commands/*.md + stations.json 派生。
@@ -121,7 +121,7 @@ CI（`.github/workflows/ci.yml`）：ubuntu + windows + macos 三平台跑 `npm 
 - **`radio_doctor` MCP tool 会走 withState 锁**（doctor 只读，不必），但只是几十 ms 开销，没害处。CLI 的 `doctor` 分支已跳过锁。
 - **withState 持锁跨越 Spotify API 往返**（可能几百 ms），30s 才偷锁。并发 tool call 罕见，可接受，但知道这点。
 - **anchor token 在中文 Windows 上是本地化字符串**（PowerShell CreationDate），只比较相等所以功能正常，看起来是乱码但无碍。
-- **外部源天然脆**：stream URL 会变、Spotify 需 Premium+active device、HÖR 依赖网页结构 + yt-dlp、播客 RSS 格式各异。`/doctor` 是排障第一站。
+- **外部源天然脆**：stream URL 会变、Spotify 需 Premium+active device、HÖR 依赖网页结构 + yt-dlp + YouTube cookies（会过期，需定期重新导出）、播客 RSS 格式各异。`/doctor` 是排障第一站。
 
 ---
 
@@ -134,3 +134,4 @@ CI（`.github/workflows/ci.yml`）：ubuntu + windows + macos 三平台跑 `npm 
 - `players.json` — player/watchdog PID registry。
 - `spotify.json` — OAuth token（`0o600` 权限）。
 - `dynamic-hosts.json` — 动态 host 列表（orphan sweep 用），有上限。
+- `cookies.txt` — YouTube cookies（HÖR 用，Netscape 格式，用户手动导出）。
